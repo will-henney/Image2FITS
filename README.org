@@ -1,0 +1,19 @@
+
+
+* Usage
+
+#+BEGIN_SRC sh :results verbatim
+python image2fits.py --help
+#+END_SRC
+
+#+RESULTS:
+: usage: image2fits.py [-h] file
+: 
+: Convert an RGB or Grayscale image to FITS format
+: 
+: positional arguments:
+:   file        Image file to convert
+: 
+: optional arguments:
+:   -h, --help  show this help message and exit
+
