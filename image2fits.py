@@ -10,25 +10,35 @@ import pyfits
 from PIL import Image
 import argparse
 
-parser = argparse.ArgumentParser(description="Convert an RGB image to 3 FITS channels")
-parser.add_argument("file", type=open,  help='RGB image file to convert')
+parser = argparse.ArgumentParser(description="Convert an RGB or Grayscale image to FITS format")
+parser.add_argument("file", type=open,  help='Image file to convert')
 args = parser.parse_args()
 
-rgbim = Image.open(args.file)           # read the image
-assert rgbim.mode == 'RGB', "File %s is not an RGB image" % (args.file)
-a = numpy.array(rgbim)                  # convert to array
-r, g, b = [a[::-1,:,i] for i in 0, 1, 2]   # split out the channels, flipping the y-axis
-
+im = Image.open(args.file)           # read the image
+assert im.mode in ["RGB", "L" ], \
+    "File %s is of type '%s', which is not supported" % (args.file, im.mode)
+a = numpy.array(im)                  # convert to array
 filestem = args.file.name.split('.')[0] 
 
-# Write each channel to a FITS file: XXX-red.fits, XXX-green.fits, XXX-blue.fits
-for chan, id in zip([r, g, b], ["red", "green", "blue"]):
-    hdu =  pyfits.PrimaryHDU(chan)
-    # Use the OBJECT keyword to describe this channel
-    hdu.header.update('OBJECT', "%s channel of %s" % (id, args.file.name))
-    hdu.header.add_comment("Written by image2fits.py, Will Henney 2011")
-    # 
-    hdu.writeto("%s-%s.fits" % (filestem, id), clobber=True)
+def add_comments(hdu):
+    hdu.header.add_comment("Written by image2fits.py, Will Henney 2011,2012")
+    hdu.header.add_comment("Converted from  %s" % (args.file.name))
+    
+
+if im.mode == "RGB":
+    # split out the channels, flipping the y-axis
+    r, g, b = [a[::-1,:,i] for i in 0, 1, 2]   
+    # Write each channel to a FITS file: XXX-red.fits, XXX-green.fits, XXX-blue.fits
+    for chan, color in zip([r, g, b], ["red", "green", "blue"]):
+        hdu =  pyfits.PrimaryHDU(chan)
+        # Use the OBJECT keyword to describe this channel
+        hdu.header.update('OBJECT', "%s channel" % (color))
+        add_comments(hdu)
+        hdu.writeto("%s-%s.fits" % (filestem, color), clobber=True)
+else:
+    hdu =  pyfits.PrimaryHDU(a[::-1,:])
+    add_comments(hdu)
+    hdu.writeto("%s.fits" % (filestem), clobber=True)
 
 
 
