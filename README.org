@@ -17,3 +17,13 @@ python image2fits.py --help
 : optional arguments:
 :   -h, --help  show this help message and exit
 
+
+
+* Example
+#+BEGIN_SRC sh :results verbatim
+echo "Last run: ${date}"
+python image2fits.py Orion051209s10.jpeg
+#+END_SRC
+
+#+RESULTS:
+: Last run: 
