@@ -4,6 +4,7 @@ image2fits.py - Convert an RGB image to 3 FITS channels
 Author: William Henney 
 Version 0.1 - 07 Apr 2011
 Version 0.2 - 24 Feb 2017 - Updated for python3 and astropy
+Version 0.3 - 23 Nov 2017 - Add support for RGBA (but we ignore the alpha channel)
 """
 from __future__ import print_function
 import numpy
@@ -30,13 +31,13 @@ args = parser.parse_args()
 
 # Python 3 requires that file be opened in binary mode
 im = Image.open(args.file)           # read the image
-assert im.mode in ["RGB", "L" ], \
+assert im.mode in ["RGBA", "RGB", "L" ], \
     "File %s is of type '%s', which is not supported" % (args.file, im.mode)
 a = numpy.array(im)                  # convert to array
 
 filestem = args.file.name.split('.')[0] 
 
-if im.mode == "RGB":
+if im.mode.startswith("RGB"):
     # split out the channels, flipping the y-axis
     r, g, b = [a[::-1,:,i] for i in [0, 1, 2]]   
     # Write each channel to a FITS file: XXX-red.fits, XXX-green.fits, XXX-blue.fits
