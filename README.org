@@ -2,7 +2,7 @@
 
 * Usage
 
-#+BEGIN_SRC sh :results verbatim
+#+BEGIN_SRC sh :results verbatim :exports both
 python image2fits.py --help
 #+END_SRC
 
@@ -20,10 +20,12 @@ python image2fits.py --help
 
 
 * Example
-#+BEGIN_SRC sh :results verbatim
-echo "Last run: ${date}"
+#+BEGIN_SRC bash :results verbatim :exports both
+echo "Last run:"
+date
 python image2fits.py Orion051209s10.jpeg
 #+END_SRC
 
 #+RESULTS:
-: Last run: 
+: Last run:
+: Wed Aug  8 13:11:38 CDT 2018

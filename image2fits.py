@@ -46,11 +46,11 @@ if im.mode.startswith("RGB"):
         # Use the OBJECT keyword to describe this channel
         hdu.header['OBJECT'] = "%s channel" % (color)
         add_comments(hdu)
-        hdu.writeto("%s-%s.fits" % (filestem, color), clobber=True)
+        hdu.writeto("%s-%s.fits" % (filestem, color), overwrite=True)
 else:
     hdu =  pyfits.PrimaryHDU(a[::-1,:])
     add_comments(hdu)
-    hdu.writeto("%s.fits" % (filestem), clobber=True)
+    hdu.writeto("%s.fits" % (filestem), overwrite=True)
 
 
 
